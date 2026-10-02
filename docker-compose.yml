@@ -1,0 +1,41 @@
+services:
+  postgres-db:
+    image: postgres:15-alpine
+    container_name: etesting-db-container
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: etesting_db
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+
+  backend-api:
+    build: ./backend
+    container_name: etesting-backend-container
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - DB_USER=postgres
+      - DB_PASSWORD=mysecretpassword
+      - DB_HOST=postgres-db
+      - DB_PORT=5432
+      - DB_NAME=etesting_db
+    depends_on:
+      - postgres-db
+
+  frontend-app:
+    build: ./frontend
+    container_name: etesting-frontend-container
+    ports:
+      - "5173:80"
+    environment:
+      - VITE_API_URL=http://localhost:5000/api
+    depends_on:
+      - backend-api
+
+volumes:
+  pgdata:
