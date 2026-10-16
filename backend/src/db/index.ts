@@ -1,5 +1,6 @@
 import dotenv from "dotenv";
 import { Pool } from "pg";
+import { logger } from "../utils/logger";
 
 dotenv.config();
 
@@ -15,19 +16,30 @@ async function connectWithRetry(retries = 5, delay = 3000) {
   while (retries > 0) {
     try {
       const res = await pool.query("SELECT NOW()");
-      console.log(
-        "[db]: Успешное подключение к PostgreSQL. Время СУБД:",
-        res.rows[0].now,
+      logger.info(
+        `Успешное подключение к PostgreSQL. Время СУБД: ${res.rows[0].now}`,
+        {
+          context: "database-init",
+        },
       );
       return;
     } catch (err: any) {
       retries--;
-      console.log(
-        `[db]: База данных еще инициализируется. Попыток осталось: ${retries}. Ошибка: ${err.message}`,
+      logger.warn(
+        `База данных еще инициализируется. Попыток осталось: ${retries}`,
+        {
+          error: err.message,
+          retries_left: retries,
+          context: "database-init",
+        },
       );
+
       if (retries === 0) {
-        console.error(
-          "[db]: Все попытки подключения исчерпаны. Сервер завершает работу.",
+        logger.error(
+          "Все попытки подключения исчерпаны. Сервер завершает работу.",
+          {
+            context: "database-init",
+          },
         );
         process.exit(1);
       }

@@ -2,6 +2,7 @@ import { Request, Response } from "express";
 import { query } from "../db";
 import { Option } from "../interfaces/Option";
 import { AdminQuestion, Question } from "../interfaces/Question";
+import { logger } from "../utils/logger";
 
 export async function getQuestions(req: Request, res: Response) {
   try {
@@ -45,12 +46,18 @@ export async function getQuestions(req: Request, res: Response) {
       }),
     );
 
+    logger.info("Успешное получение списка вопросов", {
+      role: isAdmin ? "admin" : "student",
+      count: completeQuestions.length,
+      context: "getQuestions",
+    });
+
     res.json(completeQuestions);
   } catch (err: any) {
-    console.error(
-      "[questions-controller] Ошибка при получении вопросов:",
-      err.message,
-    );
+    logger.error("Ошибка при получении вопросов", {
+      error: err.message,
+      context: "getQuestions",
+    });
     res
       .status(500)
       .json({ error: "Внутренняя ошибка сервера при загрузке теста" });
@@ -69,14 +76,19 @@ export async function deleteQuestionById(req: Request, res: Response) {
         .json({ error: "Вопрос с таким идентификатором не найден" });
     }
 
+    logger.info(`Вопрос с ID ${id} и варианты ответов успешно удалены`, {
+      questionId: id,
+      context: "deleteQuestionById",
+    });
+
     res.json({
       message: "Вопрос и связанные варианты ответов успешно удалены",
     });
   } catch (err: any) {
-    console.error(
-      "[questions-controller] Ошибка при удалении вопроса:",
-      err.message,
-    );
+    logger.error(`Ошибка при удалении вопроса с ID ${req.params.id}`, {
+      error: err.message,
+      context: "deleteQuestionById",
+    });
     res.status(500).json({ error: "Ошибка сервера при удалении вопроса" });
   }
 }
@@ -116,12 +128,17 @@ export async function getQuestionById(req: Request, res: Response) {
       isHidden: dbQuestion.isHidden,
     };
 
+    logger.info(`Успешно загружены данные вопроса с ID ${id}`, {
+      questionId: id,
+      context: "getQuestionById",
+    });
+
     res.json(adminQuestion);
   } catch (err: any) {
-    console.error(
-      "[questions-controller] Ошибка при получении вопроса по ID:",
-      err.message,
-    );
+    logger.error(`Ошибка при получении вопроса по ID ${req.params.id}`, {
+      error: err.message,
+      context: "getQuestionById",
+    });
     res
       .status(500)
       .json({ error: "Ошибка сервера при загрузке данных вопроса" });
@@ -163,12 +180,19 @@ export async function createQuestion(req: Request, res: Response) {
       ]);
     }
 
+    logger.info(`Новый вопрос успешно создан с ID ${questionId}`, {
+      questionId,
+      optionsCount: options.length,
+      isHidden: isHidden || false,
+      context: "createQuestion",
+    });
+
     res.status(201).json({ message: "Вопрос успешно создан", questionId });
   } catch (err: any) {
-    console.error(
-      "[questions-controller] Ошибка при создании вопроса:",
-      err.message,
-    );
+    logger.error("Ошибка при создании нового вопроса", {
+      error: err.message,
+      context: "createQuestion",
+    });
     res
       .status(500)
       .json({ error: "Ошибка сервера при сохранении нового вопроса" });
@@ -196,12 +220,18 @@ export async function updateQuestionById(req: Request, res: Response) {
       );
     }
 
+    logger.info(`Данные вопроса с ID ${id} успешно обновлены`, {
+      questionId: id,
+      isHidden,
+      context: "updateQuestionById",
+    });
+
     res.json({ message: "Вопрос успешно обновлен" });
   } catch (err: any) {
-    console.error(
-      "[questions-controller] Ошибка при обновлении вопроса:",
-      err.message,
-    );
+    logger.error(`Ошибка при обновлении вопроса с ID ${req.params.id}`, {
+      error: err.message,
+      context: "updateQuestionById",
+    });
     res
       .status(500)
       .json({ error: "Ошибка сервера при обновлении данных вопроса" });

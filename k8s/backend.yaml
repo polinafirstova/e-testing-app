@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: etesting-backend:v1
+          image: etesting-backend:v3
           imagePullPolicy: Never
           env:
             - name: PORT
@@ -29,6 +29,10 @@ spec:
               value: "5432"
             - name: DB_NAME
               value: "etesting_db"
+            - name: ADMIN_PASSWORD
+              value: "admin123"
+            - name: ADMIN_TOKEN
+              value: "secret-admin-session-token"
           ports:
             - containerPort: 5000
 ---

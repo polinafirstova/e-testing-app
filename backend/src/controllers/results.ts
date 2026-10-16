@@ -5,6 +5,7 @@ import {
   TestResult,
   UserAnswer,
 } from "../interfaces/UserAnswer";
+import { logger } from "../utils/logger";
 
 export const submitTest = async (
   req: Request<{}, {}, SubmitTestDTO>,
@@ -54,8 +55,15 @@ export const submitTest = async (
 
     await query("COMMIT");
 
-    console.log(
-      `[results-controller] Пользователь "${username}" успешно сдал тест на ${score}/${total} (ID попытки: ${insertedResultId})`,
+    logger.info(
+      `Пользователь "${username}" успешно сдал тест на ${score}/${total}`,
+      {
+        student: username,
+        score: score,
+        total: total,
+        resultId: insertedResultId,
+        context: "submitTest",
+      },
     );
 
     res.status(201).json({
@@ -63,13 +71,16 @@ export const submitTest = async (
     });
   } catch (err: any) {
     await query("ROLLBACK");
-    console.error(
-      "[results-controller] Ошибка при сохранении результатов теста:",
-      err.message,
-    );
+
+    logger.error("Ошибка при отправке и сохранении результатов теста", {
+      error: err.message,
+      student: username,
+      context: "submitTest",
+    });
+
     res
       .status(500)
-      .json({ error: "Внутренняя ошибка сервера при обработке теста" });
+      .json({ error: "Ошибка сервера при сохранении результатов теста" });
   }
 };
 
@@ -125,10 +136,11 @@ export const getTestResultById = async (
 
     res.json(fullTestResult);
   } catch (err: any) {
-    console.error(
-      `[results-controller] Ошибка при получении результата ${resultId}:`,
-      err.message,
-    );
+    logger.error(`Ошибка при получении результата с ID ${resultId}`, {
+      error: err.message,
+      resultId: resultId,
+      context: "getTestResultById",
+    });
     res
       .status(500)
       .json({ error: "Внутренняя ошибка сервера при загрузке результатов" });

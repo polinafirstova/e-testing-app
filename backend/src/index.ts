@@ -5,6 +5,7 @@ import "./db";
 import authRouter from "./routes/auth";
 import questionsRouter from "./routes/questions";
 import resultsRouter from "./routes/results";
+import { logger } from "./utils/logger";
 
 dotenv.config();
 
@@ -19,9 +20,12 @@ app.use("/api/results", resultsRouter);
 app.use("/api/auth", authRouter);
 
 app.get("/api", (req: Request, res: Response) => {
+  logger.info("Проверка работы сервера");
   res.json({ status: "OK", message: "Сервер работает!" });
 });
 
 app.listen(PORT, () => {
-  console.log(`[server]: Сервер запущен на http://localhost:${PORT}`);
+  logger.info(`Сервер запущен на порту ${PORT}`, {
+    url: `http://localhost:${PORT}`,
+  });
 });
