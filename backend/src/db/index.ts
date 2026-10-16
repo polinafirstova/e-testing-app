@@ -23,7 +23,7 @@ async function connectWithRetry(retries = 5, delay = 3000) {
     } catch (err: any) {
       retries--;
       console.log(
-        `[db]: ⏳ База данных еще инициализируется. Попыток осталось: ${retries}. Ошибка: ${err.message}`,
+        `[db]: База данных еще инициализируется. Попыток осталось: ${retries}. Ошибка: ${err.message}`,
       );
       if (retries === 0) {
         console.error(

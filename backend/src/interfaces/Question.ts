@@ -11,6 +11,6 @@ export interface AdminQuestion {
   id: number;
   text: string;
   options: Option[];
-  correctAnswer: number;
+  correctAnswerId: number;
   isHidden: boolean;
 }
