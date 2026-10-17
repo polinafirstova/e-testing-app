@@ -1,9 +1,9 @@
-import { getResultById, postResults } from "../api/results";
+import { getResultById, getStatistics, postResults } from "../api/results";
 import type { SubmitTestDTO, TestResult } from "../interfaces/UserAnswer";
 
-export const sendTestAnswers = async (
+export async function sendTestAnswers(
   testData: SubmitTestDTO,
-): Promise<{ id: number }> => {
+): Promise<{ id: number }> {
   try {
     const responseData = await postResults(testData);
     return { id: responseData.id };
@@ -16,9 +16,9 @@ export const sendTestAnswers = async (
     console.error("[resultsService] Ошибка при отправке теста:", errorMessage);
     throw new Error(errorMessage, { cause: error });
   }
-};
+}
 
-export const loadTestResult = async (id: number): Promise<TestResult> => {
+export async function loadTestResult(id: number): Promise<TestResult> {
   try {
     const rawData = await getResultById(id);
 
@@ -36,4 +36,13 @@ export const loadTestResult = async (id: number): Promise<TestResult> => {
     );
     throw new Error(errorMessage, { cause: error });
   }
-};
+}
+
+export async function loadTestStatistics() {
+  try {
+    return await getStatistics();
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : "Ошибка сети";
+    throw new Error(errorMessage, { cause: error });
+  }
+}

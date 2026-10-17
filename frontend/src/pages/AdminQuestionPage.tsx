@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import AdminQuestionCard from "../components/AdminQuestionCard";
+import Button from "../components/ui/Button";
 import ConfirmModal from "../components/ui/ConfirmModal";
 import ErrorMessage from "../components/ui/ErrorMessage";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
@@ -65,18 +66,12 @@ function AdminQuestionPage() {
         <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4 border-b border-gray-100 pb-5">
           <h2 className="text-2xl font-bold text-gray-900">Банк вопросов</h2>
           <div className="flex gap-3 self-start sm:self-auto">
-            <button
-              onClick={() => navigate("/admin/edit")}
-              className="px-4 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-colors cursor-pointer text-center"
-            >
+            <Button variant="primary" onClick={() => navigate("/admin/edit")}>
               Добавить вопрос
-            </button>
-            <button
-              onClick={() => navigate("/admin")}
-              className="px-4 py-2.5 bg-white border border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900 text-sm font-medium rounded-xl transition-all shadow-sm cursor-pointer text-center"
-            >
+            </Button>
+            <Button variant="secondary" onClick={() => navigate("/admin")}>
               ← Назад в меню
-            </button>
+            </Button>
           </div>
         </div>
         <div className="flex flex-col gap-5 mt-2">

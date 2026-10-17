@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import "./db";
 import authRouter from "./routes/auth";
+import logsRouter from "./routes/logs";
 import questionsRouter from "./routes/questions";
 import resultsRouter from "./routes/results";
 import { logger } from "./utils/logger";
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use("/api/questions", questionsRouter);
 app.use("/api/results", resultsRouter);
 app.use("/api/auth", authRouter);
+app.use("/api/logs", logsRouter);
 
 app.get("/api", (req: Request, res: Response) => {
   logger.info("Проверка работы сервера");

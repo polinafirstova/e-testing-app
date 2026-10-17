@@ -146,3 +146,50 @@ export const getTestResultById = async (
       .json({ error: "Внутренняя ошибка сервера при загрузке результатов" });
   }
 };
+
+export async function getStatistics(req: Request, res: Response) {
+  try {
+    const resultsRes = await query(
+      'SELECT id, username, score, total, created_at AS "createdAt" FROM test_results ORDER BY id DESC',
+    );
+
+    const metricsRes = await query(`
+      SELECT 
+        COUNT(*)::int as "totalPasses",
+        COALESCE(AVG(score), 0)::float as "averageScore",
+        COALESCE(MAX(score), 0)::int as "maxScore"
+      FROM test_results
+    `);
+
+    const metrics = metricsRes.rows[0];
+
+    const statsData = {
+      history: resultsRes.rows,
+      summary: {
+        totalPasses: metrics.totalPasses,
+        averageScore: Math.round(metrics.averageScore * 10) / 10,
+        maxScore: metrics.maxScore,
+      },
+    };
+
+    logger.info(
+      "Успешно сформирован и выгружен отчет по статистике тестирования",
+      {
+        context: "getStatistics",
+        totalPasses: statsData.summary.totalPasses,
+        averageGroupScore: statsData.summary.averageScore,
+      },
+    );
+
+    res.json(statsData);
+  } catch (err: any) {
+    logger.error("Ошибка при формировании статистики ответов", {
+      error: err.message,
+      context: "getStatistics",
+    });
+
+    res
+      .status(500)
+      .json({ error: "Внутренняя ошибка сервера при формировании аналитики" });
+  }
+}

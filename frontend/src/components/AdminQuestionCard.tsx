@@ -1,6 +1,7 @@
 import React from "react";
 import { useNavigate } from "react-router";
 import type { AdminQuestion } from "../interfaces/Question";
+import Button from "./ui/Button";
 
 interface AdminQuestionCardProps {
   question: AdminQuestion;
@@ -72,18 +73,20 @@ function AdminQuestionCard({
           <span className="font-bold">{correctOptionText}</span>
         </p>
         <div className="flex gap-2 self-end sm:self-auto">
-          <button
+          <Button
+            variant="secondary"
             onClick={() => navigate(`/admin/edit?id=${question.id}`)}
-            className="px-3 py-1.5 bg-white border border-gray-300 hover:border-gray-600 text-gray-700 hover:text-gray-900 rounded-xl transition-all cursor-pointer"
+            className="text-xs py-1.5 px-3"
           >
             Редактировать
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="danger"
             onClick={() => onDeleteClick(question.id)}
-            className="px-3 py-1.5 bg-white border border-red-200 hover:border-red-500 text-red-600 hover:text-red-700 rounded-xl transition-all cursor-pointer"
+            className="text-xs py-1.5 px-3"
           >
             Удалить
-          </button>
+          </Button>
         </div>
       </div>
     </div>

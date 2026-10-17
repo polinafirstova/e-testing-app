@@ -1,2 +1,5 @@
 k8s/commands.txt
 *.mp4
+
+logs/
+*.log

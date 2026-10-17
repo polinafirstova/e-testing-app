@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router";
+import Button from "./Button";
 
 interface ErrorMessageProps {
   title?: string;
@@ -18,12 +19,9 @@ export default function ErrorMessage({
           <h3 className="text-lg font-bold text-red-600">{title}</h3>
           <p className="text-sm text-gray-600 leading-snug">{message}</p>
         </div>
-        <button
-          onClick={() => navigate("/")}
-          className="w-full py-3 px-4 bg-white border border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900 font-medium rounded-xl text-sm transition-all shadow-xs cursor-pointer text-center"
-        >
+        <Button variant="secondary" onClick={() => navigate("/")} fullWidth>
           Вернуться на главную
-        </button>
+        </Button>
       </div>
     </div>
   );

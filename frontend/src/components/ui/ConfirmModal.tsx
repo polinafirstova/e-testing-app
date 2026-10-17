@@ -1,4 +1,4 @@
-import React from "react";
+import Button from "./Button";
 
 interface ConfirmModalProps {
   isOpen: boolean;
@@ -18,7 +18,7 @@ function ConfirmModal({
   error,
   onConfirm,
   onCancel,
-}: ConfirmModalProps): React.JSX.Element | null {
+}: ConfirmModalProps) {
   if (!isOpen) return null;
 
   return (
@@ -38,18 +38,12 @@ function ConfirmModal({
           </p>
         )}
         <div className="flex justify-center gap-3 w-full">
-          <button
-            onClick={onCancel}
-            className="flex-1 px-4 py-2 bg-white border border-red-300 hover:border-red-400 text-red-700 hover:text-red-900 text-sm font-medium rounded-xl transition-all cursor-pointer text-center"
-          >
+          <Button variant="secondary" onClick={onCancel} fullWidth>
             Отмена
-          </button>
-          <button
-            onClick={onConfirm}
-            className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl shadow-xs transition-colors cursor-pointer text-center"
-          >
+          </Button>
+          <Button variant="primary" onClick={onConfirm} fullWidth>
             {confirmLabel}
-          </button>
+          </Button>
         </div>
       </div>
     </div>

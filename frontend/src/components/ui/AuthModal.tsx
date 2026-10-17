@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { authenticateAdmin } from "../../services/auth";
+import Button from "./Button";
 import InputField from "./InputField";
 
 interface AuthModalProps {
@@ -67,20 +68,12 @@ function AuthModal({ isOpen, onSuccess, onCancel }: AuthModalProps) {
           }}
         />
         <div className="flex justify-end gap-3 w-full mt-2">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="flex-1 px-4 py-2 bg-white border border-gray-300 hover:border-gray-400 text-gray-700 text-sm font-medium rounded-xl transition-all cursor-pointer text-center"
-          >
+          <Button variant="secondary" onClick={onCancel} fullWidth>
             Отмена
-          </button>
-          <button
-            type="submit"
-            disabled={loading}
-            className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-xl shadow-xs transition-colors cursor-pointer text-center disabled:opacity-50"
-          >
+          </Button>
+          <Button variant="primary" type="submit" disabled={loading} fullWidth>
             {loading ? "Вход..." : "Войти"}
-          </button>
+          </Button>
         </div>
       </form>
     </div>

@@ -8,6 +8,7 @@ import {
   validateOptions,
   validateQuestionText,
 } from "../utils/validateQuestion";
+import Button from "./ui/Button";
 import InputField from "./ui/InputField";
 
 interface QuestionFormProps {
@@ -146,13 +147,9 @@ export default function QuestionForm({
           <label className="text-sm font-semibold text-gray-700">
             Варианты ответов:
           </label>
-          <button
-            type="button"
-            onClick={handleAddOption}
-            className="text-xs font-bold text-blue-600 hover:text-blue-700 px-2.5 py-1 bg-blue-50 hover:bg-blue-100/60 rounded-lg transition-colors cursor-pointer"
-          >
+          <Button onClick={handleAddOption} className="text-xs">
             + Добавить вариант
-          </button>
+          </Button>
         </div>
         <div className="flex flex-col gap-3">
           {options.map((option, idx) => (
@@ -204,31 +201,32 @@ export default function QuestionForm({
       </label>
       <div className="flex justify-between items-center border-t border-gray-100 pt-4 mt-2 gap-3 flex-wrap">
         {initialData && onDelete ? (
-          <button
-            type="button"
+          <Button
+            variant="danger"
             onClick={onDelete}
-            className="px-4 py-2.5 bg-white border border-red-200 hover:border-red-300 text-red-600 hover:text-red-700 text-sm font-medium rounded-xl transition-all cursor-pointer text-center"
+            className="text-sm py-2 px-4"
           >
             Удалить вопрос
-          </button>
+          </Button>
         ) : (
           <div />
         )}
         <div className="flex gap-3">
-          <button
-            type="button"
+          <Button
+            variant="secondary"
             onClick={onCancel}
-            className="px-5 py-2.5 bg-white border border-gray-300 hover:border-gray-400 text-gray-700 hover:text-gray-900 text-sm font-medium rounded-xl transition-all cursor-pointer"
+            className="text-sm py-2 px-5"
           >
             Отмена
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="primary"
             type="submit"
             disabled={isSubmitting}
-            className="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold rounded-xl shadow-xs transition-colors cursor-pointer disabled:opacity-50"
+            className="text-sm py-2 px-6"
           >
             {initialData ? "Сохранить изменения" : "Создать вопрос"}
-          </button>
+          </Button>
         </div>
       </div>
     </form>

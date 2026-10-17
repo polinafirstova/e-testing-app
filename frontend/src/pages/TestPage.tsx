@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useSearchParams } from "react-router";
 import QuestionCard from "../components/QuestionCard";
+import Button from "../components/ui/Button";
 import ConfirmModal from "../components/ui/ConfirmModal";
 import ErrorMessage from "../components/ui/ErrorMessage";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
@@ -88,12 +89,13 @@ function TestPage() {
   return (
     <div className="page-layout">
       <div className="w-full max-w-xl flex justify-start mb-2">
-        <button
+        <Button
+          variant="secondary"
           onClick={() => setIsModalOpen(true)}
-          className="text-xs font-medium text-gray-500 hover:text-gray-700 bg-gray-100 hover:bg-gray-200/80 px-3 py-1.5 rounded-lg transition-colors cursor-pointer flex items-center gap-1"
+          className="text-xs py-1.5 px-3 bg-gray-100 border-none text-gray-500 hover:text-gray-700 hover:bg-gray-200/80"
         >
           ← Покинуть тест
-        </button>
+        </Button>
       </div>
       <div className="card-container">
         <div className="flex flex-col gap-2 border-b border-gray-100 pb-4">
@@ -115,19 +117,17 @@ function TestPage() {
           onSelectOption={setSelectedOptionId}
         />
         <div className="flex justify-end pt-2">
-          <button
+          <Button
+            variant="primary"
+            type="button"
             onClick={handleNext}
             disabled={selectedOptionId === null || isSubmitting}
-            className={`px-6 py-3 font-medium rounded-xl transition-all shadow-sm ${
-              selectedOptionId === null
-                ? "bg-gray-100 text-gray-400 cursor-not-allowed"
-                : "bg-blue-600 hover:bg-blue-700 text-white cursor-pointer"
-            }`}
+            className="px-6 text-sm"
           >
             {currentIndex + 1 === questions.length
               ? "Завершить тест"
               : "Следующий вопрос"}
-          </button>
+          </Button>
         </div>
       </div>
       <ConfirmModal

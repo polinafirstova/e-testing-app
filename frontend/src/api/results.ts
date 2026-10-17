@@ -1,9 +1,9 @@
 import type { SubmitTestDTO, TestResult } from "../interfaces/UserAnswer";
 import { API_BASE_URL } from "./config";
 
-export const postResults = async (
+export async function postResults(
   bodyData: SubmitTestDTO,
-): Promise<{ id: number }> => {
+): Promise<{ id: number }> {
   const response = await fetch(`${API_BASE_URL}/results`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -13,12 +13,20 @@ export const postResults = async (
     throw new Error("Ошибка сети при отправке результатов");
   }
   return response.json();
-};
+}
 
-export const getResultById = async (id: number): Promise<TestResult> => {
+export async function getResultById(id: number): Promise<TestResult> {
   const response = await fetch(`${API_BASE_URL}/results/${id}`);
   if (!response.ok) {
     throw new Error(`Ошибка сети при получении результата №${id}`);
   }
   return response.json();
-};
+}
+
+export async function getStatistics() {
+  const response = await fetch(`${API_BASE_URL}/results/statistics`);
+  if (!response.ok) {
+    throw new Error("Не удалось загрузить данные статистики");
+  }
+  return response.json();
+}

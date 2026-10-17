@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import AuthModal from "../components/ui/AuthModal";
+import Button from "../components/ui/Button";
 import InputField from "../components/ui/InputField";
 import { validateName } from "../utils/validateName";
 
@@ -34,12 +35,13 @@ function HomePage() {
   return (
     <div className="page-layout">
       <div className="w-full max-w-md flex justify-end mb-2">
-        <button
+        <Button
+          variant="secondary"
           onClick={() => setIsAuthOpen(true)}
-          className="text-xs font-semibold text-gray-500 hover:text-blue-600 bg-white border border-gray-200 hover:border-blue-200 px-3 py-2 rounded-xl transition-all cursor-pointer flex items-center gap-1 shadow-xs"
+          className="text-xs py-2 px-3 hover:text-blue-600 hover:border-blue-200 flex items-center gap-1"
         >
           Панель управления
-        </button>
+        </Button>
       </div>
       <div className="card-container max-w-md">
         <div className="flex flex-col gap-1 text-center">
@@ -59,12 +61,9 @@ function HomePage() {
             error={error}
             onChange={handleChangeName}
           />
-          <button
-            type="submit"
-            className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-sm transition-colors cursor-pointer text-center"
-          >
+          <Button type="submit" fullWidth>
             Начать тестирование
-          </button>
+          </Button>
         </form>
       </div>
       <AuthModal

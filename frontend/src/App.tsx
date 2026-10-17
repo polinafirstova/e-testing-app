@@ -1,6 +1,7 @@
 import { BrowserRouter, Route, Routes } from "react-router";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AdminEditPage from "./pages/AdminEditPage";
+import AdminLogsPage from "./pages/AdminLogsPage";
 import AdminPage from "./pages/AdminPage";
 import AdminQuestionPage from "./pages/AdminQuestionPage";
 import AdminStatisticPage from "./pages/AdminStatisticPage";
@@ -19,7 +20,8 @@ function App() {
           <Route path="/admin" element={<AdminPage />} />
           <Route path="/admin/questions" element={<AdminQuestionPage />} />
           <Route path="/admin/edit" element={<AdminEditPage />} />
-          <Route path="/admin/statistic" element={<AdminStatisticPage />} />
+          <Route path="/admin/statistics" element={<AdminStatisticPage />} />
+          <Route path="/admin/logs" element={<AdminLogsPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

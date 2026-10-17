@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router";
 import ResultQuestionCard from "../components/ResultQuestionCard";
+import Button from "../components/ui/Button";
 import ErrorMessage from "../components/ui/ErrorMessage";
 import LoadingSpinner from "../components/ui/LoadingSpinner";
 import type { Question } from "../interfaces/Question";
 import type { TestResult } from "../interfaces/UserAnswer";
+import { isAuthenticated } from "../services/auth";
 import { loadQuestionsForTest } from "../services/questions";
 import { loadTestResult } from "../services/results";
 
@@ -22,6 +24,8 @@ function ResultsPage() {
   const [error, setError] = useState<string>(
     isIdInvalid ? "Некорректный идентификатор результатов тестирования." : "",
   );
+
+  const isAdminUser = isAuthenticated();
 
   useEffect(() => {
     if (isIdInvalid) return;
@@ -80,7 +84,6 @@ function ResultsPage() {
               const answer = result?.answers.find(
                 (ans) => ans.questionId === question.id,
               );
-
               return (
                 <ResultQuestionCard
                   key={question.id}
@@ -94,12 +97,23 @@ function ResultsPage() {
           </div>
         </div>
         <div className="flex justify-center pt-2">
-          <button
-            onClick={() => navigate("/")}
-            className="w-full sm:w-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl shadow-sm transition-colors cursor-pointer text-center text-sm"
-          >
-            Пройти тест заново
-          </button>
+          {isAdminUser ? (
+            <Button
+              variant="secondary"
+              onClick={() => navigate("/admin/statistics")}
+              className="w-full sm:w-auto text-sm"
+            >
+              ← Назад в статистику
+            </Button>
+          ) : (
+            <Button
+              variant="primary"
+              onClick={() => navigate("/")}
+              className="w-full sm:w-auto text-sm"
+            >
+              Пройти тест заново
+            </Button>
+          )}
         </div>
       </div>
     </div>
