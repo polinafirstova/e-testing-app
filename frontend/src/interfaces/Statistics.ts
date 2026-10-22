@@ -11,3 +11,8 @@ export interface StatSummary {
   averageScore: number;
   maxScore: number;
 }
+
+export interface Statistics {
+  history: TestHistoryItem[];
+  summary: StatSummary;
+}

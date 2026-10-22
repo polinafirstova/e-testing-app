@@ -1,4 +1,5 @@
 import { getResultById, getStatistics, postResults } from "../api/results";
+import type { Statistics } from "../interfaces/Statistics";
 import type { SubmitTestDTO, TestResult } from "../interfaces/UserAnswer";
 
 export async function sendTestAnswers(
@@ -38,7 +39,7 @@ export async function loadTestResult(id: number): Promise<TestResult> {
   }
 }
 
-export async function loadTestStatistics() {
+export async function loadTestStatistics(): Promise<Statistics> {
   try {
     return await getStatistics();
   } catch (error: unknown) {

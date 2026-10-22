@@ -8,6 +8,23 @@ export async function getQuestions(req: Request, res: Response) {
   try {
     const isAdmin = req.query.admin === "true";
 
+    if (isAdmin) {
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res
+          .status(401)
+          .json({
+            error:
+              "Требуется авторизация для доступа к административной панели",
+          });
+      }
+
+      const token = authHeader.replace("Bearer ", "");
+      if (token !== process.env.ADMIN_TOKEN) {
+        return res.status(403).json({ error: "Неверный токен доступа" });
+      }
+    }
+
     const sqlQuery = isAdmin
       ? 'SELECT id, text, correct_answer AS "correctAnswerId", is_hidden AS "isHidden" FROM questions ORDER BY id'
       : 'SELECT id, text, is_hidden AS "isHidden" FROM questions WHERE is_hidden = FALSE ORDER BY id';
@@ -204,21 +221,64 @@ export async function updateQuestionById(req: Request, res: Response) {
     const { id } = req.params;
     const { text, isHidden, options, correctAnswerId } = req.body;
 
+    if (!id || !text || !Array.isArray(options) || options.length === 0) {
+      return res
+        .status(400)
+        .json({ error: "Некорректные исходные данные вопроса" });
+    }
+
     await query(
-      "UPDATE questions SET text = $1, is_hidden = $2, correct_answer = $3 WHERE id = $4",
-      [text, isHidden, correctAnswerId, id],
+      "UPDATE questions SET text = $1, is_hidden = $2 WHERE id = $3",
+      [text, isHidden, id],
     );
 
-    if (Array.isArray(options)) {
-      await Promise.all(
-        options.map(async (opt: { id: number; text: string }) => {
+    const FAKE_ID_THRESHOLD = 1000000000000;
+
+    const existingOptionIds = options
+      .filter((opt: { id: number }) => opt.id < FAKE_ID_THRESHOLD)
+      .map((opt: { id: number }) => opt.id);
+
+    if (existingOptionIds.length > 0) {
+      await query(
+        `DELETE FROM options WHERE question_id = $1 AND id NOT IN (${existingOptionIds
+          .map((_, i) => `$${i + 2}`)
+          .join(", ")})`,
+        [id, ...existingOptionIds],
+      );
+    } else {
+      await query("DELETE FROM options WHERE question_id = $1", [id]);
+    }
+
+    const newOptionIdMap = new Map<number, number>();
+
+    await Promise.all(
+      options.map(async (opt: { id: number; text: string }) => {
+        if (opt.id < FAKE_ID_THRESHOLD) {
           await query(
             "UPDATE options SET text = $1 WHERE id = $2 AND question_id = $3",
             [opt.text, opt.id, id],
           );
-        }),
-      );
+        } else {
+          const insertRes = await query(
+            "INSERT INTO options (question_id, text) VALUES ($1, $2) RETURNING id",
+            [id, opt.text],
+          );
+          const realId = insertRes.rows[0].id;
+          newOptionIdMap.set(opt.id, realId);
+        }
+      }),
+    );
+
+    let realCorrectAnswerId = correctAnswerId;
+
+    if (correctAnswerId >= FAKE_ID_THRESHOLD) {
+      realCorrectAnswerId = newOptionIdMap.get(correctAnswerId) || 0;
     }
+
+    await query("UPDATE questions SET correct_answer = $1 WHERE id = $2", [
+      realCorrectAnswerId,
+      id,
+    ]);
 
     logger.info(`Данные вопроса с ID ${id} успешно обновлены`, {
       questionId: id,

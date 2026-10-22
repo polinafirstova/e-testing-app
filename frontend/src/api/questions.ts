@@ -1,6 +1,11 @@
 import type { AdminQuestion, CreateQuestionData } from "../interfaces/Question";
 import { API_BASE_URL } from "./config";
 
+function getAuthHeader(): Record<string, string> {
+  const token = localStorage.getItem("admin_token");
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 export async function getQuestions(
   isAdmin: boolean = false,
 ): Promise<AdminQuestion[]> {
@@ -8,7 +13,9 @@ export async function getQuestions(
     ? `${API_BASE_URL}/questions?admin=true`
     : `${API_BASE_URL}/questions`;
 
-  const response = await fetch(url);
+  const response = await fetch(url, {
+    headers: getAuthHeader(),
+  });
   if (!response.ok) {
     throw new Error("Ошибка сети при запросе вопросов");
   }
@@ -18,6 +25,7 @@ export async function getQuestions(
 export async function deleteQuestionById(id: number): Promise<void> {
   const response = await fetch(`${API_BASE_URL}/questions/${id}`, {
     method: "DELETE",
+    headers: getAuthHeader(),
   });
   if (!response.ok) {
     throw new Error("Не удалось удалить вопрос с сервера");
@@ -25,7 +33,9 @@ export async function deleteQuestionById(id: number): Promise<void> {
 }
 
 export async function getQuestionById(id: number): Promise<AdminQuestion> {
-  const response = await fetch(`${API_BASE_URL}/questions/${id}?admin=true`);
+  const response = await fetch(`${API_BASE_URL}/questions/${id}?admin=true`, {
+    headers: getAuthHeader(),
+  });
   if (!response.ok) {
     throw new Error(`Не удалось получить вопрос по идентификатору ${id}`);
   }
@@ -37,6 +47,7 @@ export async function editQuestionById(question: AdminQuestion): Promise<void> {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
+      ...getAuthHeader(),
     },
     body: JSON.stringify(question),
   });
@@ -54,6 +65,7 @@ export async function createQuestion(
     method: "POST",
     headers: {
       "Content-Type": "application/json",
+      ...getAuthHeader(),
     },
     body: JSON.stringify(question),
   });

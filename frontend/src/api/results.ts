@@ -1,3 +1,4 @@
+import type { Statistics } from "../interfaces/Statistics";
 import type { SubmitTestDTO, TestResult } from "../interfaces/UserAnswer";
 import { API_BASE_URL } from "./config";
 
@@ -23,7 +24,7 @@ export async function getResultById(id: number): Promise<TestResult> {
   return response.json();
 }
 
-export async function getStatistics() {
+export async function getStatistics(): Promise<Statistics> {
   const response = await fetch(`${API_BASE_URL}/results/statistics`);
   if (!response.ok) {
     throw new Error("Не удалось загрузить данные статистики");
