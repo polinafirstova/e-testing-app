@@ -7,8 +7,12 @@ import {
   updateQuestionById,
 } from "../controllers/questions";
 import { requireAdmin } from "../middleware/authMiddleware";
+import { httpDurationMiddleware } from "../middleware/metricsMiddleware";
+import { questionsRequestDuration } from "../utils/metrics";
 
 const router = Router();
+
+router.use(httpDurationMiddleware(questionsRequestDuration));
 
 router.get("/", getQuestions);
 

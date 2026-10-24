@@ -3,6 +3,7 @@ import { query } from "../db";
 import { Option } from "../interfaces/Option";
 import { AdminQuestion, Question } from "../interfaces/Question";
 import { logger } from "../utils/logger";
+import { questionsCreatedCounter } from "../utils/metrics";
 
 export async function getQuestions(req: Request, res: Response) {
   try {
@@ -11,12 +12,9 @@ export async function getQuestions(req: Request, res: Response) {
     if (isAdmin) {
       const authHeader = req.headers.authorization;
       if (!authHeader) {
-        return res
-          .status(401)
-          .json({
-            error:
-              "Требуется авторизация для доступа к административной панели",
-          });
+        return res.status(401).json({
+          error: "Требуется авторизация для доступа к административной панели",
+        });
       }
 
       const token = authHeader.replace("Bearer ", "");
@@ -196,6 +194,8 @@ export async function createQuestion(req: Request, res: Response) {
         questionId,
       ]);
     }
+
+    questionsCreatedCounter.inc();
 
     logger.info(`Новый вопрос успешно создан с ID ${questionId}`, {
       questionId,

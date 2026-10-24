@@ -11,10 +11,14 @@ spec:
     metadata:
       labels:
         app: backend-api
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5000"
+        prometheus.io/path: "/metrics"
     spec:
       containers:
         - name: backend
-          image: etesting-backend:v3
+          image: etesting-backend:v4
           imagePullPolicy: Never
           env:
             - name: PORT

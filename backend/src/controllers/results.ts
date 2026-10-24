@@ -6,6 +6,7 @@ import {
   UserAnswer,
 } from "../interfaces/UserAnswer";
 import { logger } from "../utils/logger";
+import { testsCompletedCounter } from "../utils/metrics";
 
 export const submitTest = async (
   req: Request<{}, {}, SubmitTestDTO>,
@@ -54,6 +55,8 @@ export const submitTest = async (
     }
 
     await query("COMMIT");
+
+    testsCompletedCounter.inc();
 
     logger.info(
       `Пользователь "${username}" успешно сдал тест на ${score}/${total}`,

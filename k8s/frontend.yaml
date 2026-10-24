@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: etesting-frontend:v2
+          image: etesting-frontend:v3
           imagePullPolicy: Never
           ports:
             - containerPort: 80

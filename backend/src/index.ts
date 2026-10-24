@@ -7,6 +7,7 @@ import logsRouter from "./routes/logs";
 import questionsRouter from "./routes/questions";
 import resultsRouter from "./routes/results";
 import { logger } from "./utils/logger";
+import { register } from "./utils/metrics";
 
 dotenv.config();
 
@@ -15,6 +16,15 @@ const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
+
+app.get("/metrics", async (req: Request, res: Response) => {
+  try {
+    res.set("Content-Type", register.contentType);
+    res.end(await register.metrics());
+  } catch (ex) {
+    res.status(500).end(ex);
+  }
+});
 
 app.use("/api/questions", questionsRouter);
 app.use("/api/results", resultsRouter);
