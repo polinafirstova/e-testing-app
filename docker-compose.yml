@@ -24,6 +24,8 @@ services:
       - DB_HOST=postgres-db
       - DB_PORT=5432
       - DB_NAME=etesting_db
+      - ADMIN_PASSWORD=admin123
+      - ADMIN_TOKEN=secret-admin-session-token
     depends_on:
       - postgres-db
 
