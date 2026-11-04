@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon --watch src --ext ts --exec tsx src/index.ts",
+    "dev": "nodemon --watch src --ext ts --exec \"tsx --inspect=9229 src/index.ts\"",
     "build": "tsc",
     "start": "tsx src/index.ts"
   },

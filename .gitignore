@@ -4,3 +4,5 @@ screencasts/
 
 logs/
 *.log
+
+.vscode/
