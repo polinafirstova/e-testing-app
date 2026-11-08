@@ -1,0 +1,29 @@
+server:
+  datasource:
+    url: http://vmsingle-victoria-metrics-single-server.default.svc:8428
+  configMap: vmalert-rules
+  extraArgs: {}
+
+alertmanager:
+  enabled: true
+  extraVolumes:
+    - name: telegram-token
+      secret:
+        secretName: telegram-bot-secret
+  extraVolumeMounts:
+    - name: telegram-token
+      mountPath: /etc/alertmanager/secrets
+      readOnly: true
+  config:
+    route:
+      receiver: "telegram"
+      group_by: ["alertname"]
+      group_wait: 10s
+      group_interval: 5m
+      repeat_interval: 1h
+    receivers:
+      - name: "telegram"
+        telegram_configs:
+          - bot_token_file: /etc/alertmanager/secrets/bot_token
+            chat_id: 2003325174
+            send_resolved: true

@@ -1,0 +1,44 @@
+groups:
+  - name: service-alerts
+    interval: 1m
+    rules:
+      - alert: HighAuthFailureRate
+        expr: |
+          (1 - (sum(rate(app_auth_attempts_total{status="success"}[5m])) / sum(rate(app_auth_attempts_total[5m])))) > 0.25
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High auth failure rate ({{ $value | humanizePercentage }})"
+          description: "More than 25% of auth attempts failed for the last 5 minutes."
+
+      - alert: HighErrorRate
+        expr: |
+          (sum(rate(app_questions_request_duration_seconds_count{status="500"}[5m])) / sum(rate(app_questions_request_duration_seconds_count[5m]))) > 0.20
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate on /api/questions ({{ $value | humanizePercentage }})"
+          description: "More than 20% of requests returned 500 for the last 5 minutes."
+
+  - name: runtime-alerts
+    interval: 1m
+    rules:
+      - alert: HighEventLoopLag
+        expr: nodejs_eventloop_lag_seconds > 0.1
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Node.js event loop lag is high ({{ $value }}s)"
+          description: "Event loop lag exceeded 100ms for 2 minutes."
+
+      - alert: HighMemoryUsage
+        expr: nodejs_heap_size_used_bytes > 500 * 1024 * 1024
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "Node.js memory usage is high ({{ $value | humanize1024 }}B)"
+          description: "Heap used exceeds 500MB for 5 minutes."

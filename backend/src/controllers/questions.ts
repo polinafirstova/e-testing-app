@@ -164,7 +164,7 @@ export async function createQuestion(req: Request, res: Response) {
   try {
     const { text, isHidden, options, correctAnswerIndex } = req.body;
 
-    if (!text || !Array.isArray(options) || options.length === 0) {
+    if (!text || !Array.isArray(options) || options.length < 2) {
       return res
         .status(400)
         .json({ error: "Некорректные исходные данные вопроса" });
